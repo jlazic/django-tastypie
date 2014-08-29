@@ -180,7 +180,12 @@ class ApiKeyAuthentication(Authentication):
         Should return either ``True`` if allowed, ``False`` if not or an
         ``HttpResponse`` if you need something custom.
         """
-        from tastypie.compat import User
+        ##get_user_model is available at this point,
+        #and using lazy() raises TypeError: manager_method() keywords must be strings
+        #on user = User.objects.get(**lookup_kwargs)
+        from django.contrib.auth import get_user_model
+        User = get_user_model() 
+        username_field = User.USERNAME_FIELD
 
         try:
             username, api_key = self.extract_credentials(request)
